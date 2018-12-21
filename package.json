@@ -12,5 +12,8 @@
   "dependencies": {
     "puppeteer": "^1.11.0",
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "console-color-mr": "^2.0.0"
   }
 }

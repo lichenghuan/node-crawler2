@@ -1,44 +1,67 @@
 const puppeteer = require('puppeteer');
+const _cl = require('console-color-mr');
 
-// 等待3000毫秒
+// 等待1000毫秒
 const sleep = time => new Promise(resolve => {
     setTimeout(resolve, time);
 })
 
-const url = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8&sort=rank&page_limit=20&page_start=0`;
+
+const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8&sort=rank&page_limit=20&page_start=0`;
+
 ; (async () => {
+
     console.log('Start');
 
-    // 启动一个浏览器
+    // 1.启动一个浏览器--------------------------------------------------------
     const brower = await puppeteer.launch({
         args: ['--no-sandbox'],
         dumpio: false,
-        headless: false, //false 打开浏览器
+        headless: false, //false 打开浏览器，默认true
         devtools: false, //打开浏览器开发工具
     });
 
-    const page = await brower.newPage()   // 开启一个新页面
+    // 2.开启一个新页面--------------------------------------------------------
+    const page = await brower.newPage()
 
-    // 去豆瓣那个页面
-    await page.goto(url, {
+    //设置窗口 
+    page.setViewport({
+        width: 1024,
+        height: 820,
+        isMobile: false
+    });
+
+    // 3.前往那个页面--------------------------------------------------------
+    await page.goto(URL, {
         waitUntil: 'networkidle2'  // 网络空闲说明已加载完毕
     });
 
-    await sleep(3000);
 
-    // 页面加载更多按钮出现
-    await page.waitForSelector('.more');
+    //4.页面进行操作--------------------------------------------------------
+
+    // const content = await page.content();  //返回页面的完整 html 代码，包括 doctype。
+    // console.log(content)
+
+    // const cookies = await page.cookies();  //page.cookies([...urls]) 如果不指定任何 url，此方法返回当前页面域名的 cookie。 如果指定了 url，只返回指定的 url 下的 cookie。
+    // console.log(cookies);
+
+    // var htmlCont = await page.$('#content');   //page.$(selector);  此方法在页面内执行 document.querySelector。如果没有元素匹配指定选择器，返回值是 null。
+    // console.log(htmlCont);
+
+
+    await sleep(1000);
+
+    await page.waitForSelector('.more');  // 页面'加载更多'按钮出现
 
     // 只爬取两页的数据
     for (let i = 0; i < 1; i++) {
-        await sleep(3000);
-        // 点击加载更多
-        await page.click('.more')
+        await sleep(1000);
+        await page.click('.more')  // 点击'加载更多'按钮   page.click(selector[, options]);  selector-要点击的元素的选择器。 如果有多个匹配的元素, 点击第一个。
     }
 
     // 结果
     const result = await page.evaluate(() => {
-        // 拿到页面上的jQuery
+        // 拿到页面上的jQuery  如果网站有jquery也可以直接用，没有的话需要外部注入
         var $ = window.$;
         var items = $('.list-wp a');
         var links = [];
@@ -60,13 +83,22 @@ const url = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
                 })
             });
         }
-        return links
+        return links;
     });
 
-    // 关闭浏览器
-    brower.close();
+    // console.log(JSON.stringify(result));
 
-    console.log(result);
+    // await page.waitFor(2500); //等待2500毫秒 
+
+    await page.screenshot({
+        path: './douban.png',  //截图保存路径。
+        type: 'png',  //指定截图类型, 可以是 jpeg 或者 png , 默认 'png'
+        fullPage: true,  //如果设置为true，则对完整的页面（需要滚动的部分也包含在内）。默认是false
+    });  // 页面截图并保存；有些图片还没加载完成就截图了，所以最好结合 page.waitFor() 使用
+
+    // 5.关闭浏览器--------------------------------------------------------
+    await brower.close();
+    console.log('end')
 
 })();
 
