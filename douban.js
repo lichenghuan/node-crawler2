@@ -17,7 +17,7 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
     const brower = await puppeteer.launch({
         args: ['--no-sandbox'],
         dumpio: false,
-        headless: false, //false 打开浏览器，默认true
+        headless: true, //false 打开浏览器，默认true
         devtools: false, //打开浏览器开发工具
     });
 
@@ -36,6 +36,11 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
         waitUntil: 'networkidle2'  // 网络空闲说明已加载完毕
     });
 
+    //注入jquery
+    // await page.addScriptTag({
+    //     url: "https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"
+    // });
+
 
     //4.页面进行操作--------------------------------------------------------
 
@@ -48,6 +53,20 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
     // var htmlCont = await page.$('#content');   //page.$(selector);  此方法在页面内执行 document.querySelector。如果没有元素匹配指定选择器，返回值是 null。
     // console.log(htmlCont);
 
+    // var pageTitle = await page.$eval('.nav-logo>a', (el) => {    //DOM 操作
+    //     var cont = {
+    //         'innerHtml': el.innerHTML,
+    //         'href': el.href,
+    //         'outerHTML': el.outerHTML
+    //     }
+    //     return cont;
+    // });
+    // console.log(pageTitle)
+
+
+    // 点击搜索框拟人输入  
+    // await page.type('#inp-query', '肖申克的救赎', { delay: 0 });
+    // await page.keyboard.press('Enter');  // 回车
 
     await sleep(1000);
 
@@ -60,14 +79,14 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
     }
 
     // 结果
-    const result = await page.evaluate(() => {
+    const result = await page.evaluate(() => {  // page.evaluate方法就是在浏览器中植入javaScript代码,这些代码都是在浏览器里执行的，比如你在evaluate方法中执行console.log('puppeteer'),你在你的执行终端是看不到输出的，你需要在浏览器的console那去看。
         // 拿到页面上的jQuery  如果网站有jquery也可以直接用，没有的话需要外部注入
         var $ = window.$;
         var items = $('.list-wp a');
         var links = [];
-
         if (items.length >= 1) {
             items.each((index, item) => {
+                console.log(item);
                 let it = $(item)
                 let doubanId = it.find('div').data('id')
 
@@ -83,22 +102,25 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
                 })
             });
         }
+
         return links;
     });
+    
+
 
     // console.log(JSON.stringify(result));
 
     // await page.waitFor(2500); //等待2500毫秒 
 
-    await page.screenshot({
-        path: './douban.png',  //截图保存路径。
-        type: 'png',  //指定截图类型, 可以是 jpeg 或者 png , 默认 'png'
-        fullPage: true,  //如果设置为true，则对完整的页面（需要滚动的部分也包含在内）。默认是false
-    });  // 页面截图并保存；有些图片还没加载完成就截图了，所以最好结合 page.waitFor() 使用
+    // await page.screenshot({
+    //     path: './example.png',  //截图保存路径。
+    //     type: 'png',  //指定截图类型, 可以是 jpeg 或者 png , 默认 'png'
+    //     fullPage: true,  //如果设置为true，则对完整的页面（需要滚动的部分也包含在内）。默认是false
+    // });  // 页面截图并保存；有些图片还没加载完成就截图了，所以最好结合 page.waitFor() 使用
+
 
     // 5.关闭浏览器--------------------------------------------------------
     await brower.close();
-    console.log('end')
 
 })();
 
