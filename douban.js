@@ -63,6 +63,11 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
     // });
     // console.log(pageTitle)
 
+    //注入jquery
+    // await page.addScriptTag({
+    //     url: "https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"
+    // });
+
 
     // 点击搜索框拟人输入  
     // await page.type('#inp-query', '肖申克的救赎', { delay: 0 });
@@ -105,7 +110,7 @@ const URL = `https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8
 
         return links;
     });
-    
+
 
 
     // console.log(JSON.stringify(result));

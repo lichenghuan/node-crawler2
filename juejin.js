@@ -1,11 +1,13 @@
 const puppeteer = require('puppeteer');
+const fs = require("fs");
+const path = require('path'); //系统路径模块
 
 // 等待1000毫秒
 const sleep = time => new Promise(resolve => {
     setTimeout(resolve, time);
 })
 
-const URL = `https://juejin.im/`; 
+const URL = `https://juejin.im/`;
 
 ; (async () => {
     console.log('Start');
@@ -13,7 +15,7 @@ const URL = `https://juejin.im/`;
     const brower = await puppeteer.launch({
         args: ['--no-sandbox'],
         dumpio: false,
-        headless: false, //false 打开浏览器，默认true
+        headless: true, //false 打开浏览器，默认true
         devtools: true, //打开浏览器开发工具
     });
 
@@ -39,13 +41,12 @@ const URL = `https://juejin.im/`;
         url: "https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"
     });
 
-
     // 结果
     const result = await page.evaluate(() => {
         let data = [];
         let elements = $('.info-box');   //获取所有的li
         elements.each((i, ele) => {
-            console.log(ele)
+            console.log(ele);
             let username = $(ele).find('.username  .user-popover-box a').text();
             let title = $(ele).find('.title').text();
             data.push({ title, username, i }); // 存入数组
@@ -53,7 +54,16 @@ const URL = `https://juejin.im/`;
         return data;
     });
 
-    console.log(result)
+    //指定创建目录及文件名称，__dirname为执行当前js文件的目录
+    var file = path.join(__dirname, 'juejin.json');
+
+    //写入文件
+    fs.writeFile(file, JSON.stringify(result), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log('文件创建成功，地址：' + file);
+    });
 
     // 5.关闭浏览器--------------------------------------------------------
     // await brower.close();
