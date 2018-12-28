@@ -15,7 +15,7 @@ const URL = `https://juejin.im/`;
     const brower = await puppeteer.launch({
         args: ['--no-sandbox'],
         dumpio: false,
-        headless: true, //false 打开浏览器，默认true
+        headless: false, //false 打开浏览器，默认true
         devtools: true, //打开浏览器开发工具
     });
 

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图表</title>
+</head>
+
+<body>
+
+    <div id="chart" style="height:400px;"></div>
+
+</body>
+
+</html>
+<script src="./jquery.min.js"></script>
+<script src="./echarts.js"></script>
+<script>
+
+    // 初始化图表标签
+    var myChart = echarts.init(document.getElementById('chart'));
+
+
+
+    $.getJSON('./boss.json', function (res) {
+
+        var salaryArr = [];
+        console.log(res)
+
+        res.forEach(item => {
+            // console.log(item)
+
+            salaryArr.push(item.salary);
+        });
+
+        console.log(salaryArr)
+
+
+
+        var options = {
+            //定义一个标题
+            title: {
+                text: '测试成绩'
+            },
+            legend: {
+                data: ['xxx']
+            },
+            //X轴设置
+            xAxis: {
+                data: ['60分', '70分', '80分', '90分', '100分']
+            },
+            yAxis: {
+            },
+            //name=legend.data的时候才能显示图例
+            series: [{
+                name: 'xxx',
+                type: 'bar',
+                data: ['12', '32', '45', '21', '1']
+            }]
+
+        };
+        myChart.setOption(options);
+    })
+
+
+
+</script>
