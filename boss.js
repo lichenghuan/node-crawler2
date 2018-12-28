@@ -35,7 +35,7 @@ const URL = `https://www.zhipin.com/job_detail/`;
     });
 
     //4.页面进行操作--------------------------------------------------------
-    var info = 'web前端开发';
+    var info = 'web前端';
     var pageIndex = 1;
     await page.type('.ipt-search', info);
     await page.click('.btn-search');
@@ -79,7 +79,7 @@ const URL = `https://www.zhipin.com/job_detail/`;
     // console.log(JSON.stringify(arr));
     console.log(`共${x}页`)
     //指定创建目录及文件名称，__dirname为执行当前js文件的目录
-    var file = path.join(__dirname, 'boss.json');
+    var file = path.join(__dirname, 'boss111.json');
     //写入文件
     fs.writeFile(file, JSON.stringify(arr), function (err) {
         if (err) {
