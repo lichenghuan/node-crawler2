@@ -35,9 +35,16 @@ const URL = `https://www.zhipin.com/job_detail/`;
     });
 
     //4.页面进行操作--------------------------------------------------------
-    var info = 'web前端';
-    var pageIndex = 1;
+    var info = 'ios';
+
+    // await page.click('.search-form-con>.city-sel');
+    // await page.waitFor(1000);
+    // await page.hover('.city-box>.dorpdown-province>[ka=sel-province-27]');
+    // await page.waitFor(1000);
+    // await page.click('.dorpdown-city>.show>[ka=hot-city-101280600]'); //深圳
+
     await page.type('.ipt-search', info);
+
     await page.click('.btn-search');
 
     await page.waitFor(1000); //等待1000毫秒 
@@ -77,9 +84,9 @@ const URL = `https://www.zhipin.com/job_detail/`;
         x++;
     }
     // console.log(JSON.stringify(arr));
-    console.log(`共${x}页`)
+    console.log(`共${x}页数据`)
     //指定创建目录及文件名称，__dirname为执行当前js文件的目录
-    var file = path.join(__dirname, 'boss111.json');
+    var file = path.join(__dirname, `./jsonData/ios.json`);
     //写入文件
     fs.writeFile(file, JSON.stringify(arr), function (err) {
         if (err) {
