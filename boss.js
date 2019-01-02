@@ -35,7 +35,7 @@ const URL = `https://www.zhipin.com/job_detail/`;
     });
 
     //4.页面进行操作--------------------------------------------------------
-    var info = 'ios';
+    var info = 'ios';  //关键字
 
     // await page.click('.search-form-con>.city-sel');
     // await page.waitFor(1000);
@@ -86,7 +86,7 @@ const URL = `https://www.zhipin.com/job_detail/`;
     // console.log(JSON.stringify(arr));
     console.log(`共${x}页数据`)
     //指定创建目录及文件名称，__dirname为执行当前js文件的目录
-    var file = path.join(__dirname, `./jsonData/ios.json`);
+    var file = path.join(__dirname, `./jsonData/${info}.json`);
     //写入文件
     fs.writeFile(file, JSON.stringify(arr), function (err) {
         if (err) {
